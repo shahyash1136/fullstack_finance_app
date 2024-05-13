@@ -1,0 +1,42 @@
+{
+  "name": "finance-tracker",
+  "version": "1.0.0",
+  "description": "A full-stack personal finance tracker application built with the PERN stack (PostgreSQL, Express.js, React.js, Node.js). Allows users to manage income, expenses, budgets, and financial goals.",
+  "keywords": [
+    "finance",
+    "tracker",
+    "personal finance",
+    "PERN stack",
+    "full-stack",
+    "React.js",
+    "Node.js",
+    "Express.js",
+    "PostgreSQL"
+  ],
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shahyash1136/fullstack_finance_app"
+  },
+  "author": "yash shah",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "canvas": "^2.11.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.11.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
