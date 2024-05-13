@@ -4,7 +4,7 @@ CREATE TABLE users(
 	last_name VARCHAR(50) NOT NULL,
 	email_id VARCHAR(255) UNIQUE NOT NULL,
 	hash_password VARCHAR(100) NOT NULL,
-	profile_picture VARCHAR(255) NOT NULL
+	profile_picture VARCHAR(255)
 );
 ALTER TABLE IF EXISTS public.users
     OWNER to postgres;
