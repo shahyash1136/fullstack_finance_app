@@ -30,10 +30,6 @@ const register = async (req, res) => {
       process.env.JWT_SECRET_KEY
     );
     const data = {
-      id: newUser.rows[0].user_id,
-      first_name: newUser.rows[0].first_name,
-      last_name: newUser.rows[0].last_name,
-      email: newUser.rows[0].email_id,
       token: token,
     };
 
@@ -76,11 +72,6 @@ const login = async (req, res) => {
     );
 
     const data = {
-      id: user.rows[0].user_id,
-      first_name: user.rows[0].first_name,
-      last_name: user.rows[0].last_name,
-      email: user.rows[0].email_id,
-      profile: user.rows[0].profile_picture,
       token: token,
     };
     res.status(200).json({ data, message: "Successful" });

@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,17 +13,29 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Copyright from "@components/Copyright";
-import { Link } from "react-router-dom";
+import { userLogin } from "@store/features/AuthSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+    dispatch(userLogin(formData));
+    setFormData({
+      email: "",
+      password: "",
     });
   };
+
+  const changeHandler = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
   return (
     <Container
       component='main'
@@ -45,7 +60,7 @@ const Login = () => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component='h1' variant='h5'>
-            Sign in
+            Login
           </Typography>
         </Box>
         <Box component='form' onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
@@ -56,18 +71,22 @@ const Login = () => {
             id='email'
             label='Email Address'
             name='email'
+            value={formData.email}
             autoComplete='email'
             autoFocus
+            onChange={changeHandler}
           />
           <TextField
             margin='normal'
             required
             fullWidth
+            value={formData.password}
             name='password'
             label='Password'
             type='password'
             id='password'
             autoComplete='current-password'
+            onChange={changeHandler}
           />
           <FormControlLabel
             control={<Checkbox value='remember' color='primary' />}
@@ -78,7 +97,7 @@ const Login = () => {
             fullWidth
             variant='contained'
             sx={{ mt: 3, mb: 2 }}>
-            Sign In
+            Login
           </Button>
           <Grid container>
             <Grid item xs>
