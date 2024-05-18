@@ -15,15 +15,36 @@ config.API_URL = {
 };
 
 config.validationRules = {
-  email: {
-    required: true,
-    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    message: "Please enter a valid email address",
+  registration: {
+    email: {
+      required: true,
+      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      message: "Please enter a valid email address",
+    },
+    password: {
+      required: true,
+      minLength: 8,
+      message: "Password must be at least 8 characters long",
+    },
+    firstName: {
+      required: true,
+      message: "First name is required",
+    },
+    lastName: {
+      required: true,
+      message: "Last name is required",
+    },
   },
-  password: {
-    required: true,
-    minLength: 8,
-    message: "Password must be at least 8 characters long",
+  login: {
+    email: {
+      required: true,
+      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      message: "Please enter a valid email address",
+    },
+    password: {
+      required: true,
+      message: "Password is required",
+    },
   },
 };
 

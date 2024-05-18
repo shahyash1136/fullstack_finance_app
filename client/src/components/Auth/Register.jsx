@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -8,16 +11,47 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Copyright from "@components/Copyright";
-import { Link } from "react-router-dom";
+import { formValidator } from "@utils/common";
+import config from "@utils/config";
+import { userRegister } from "@store/features/AuthSlice";
 
 const Register = () => {
-  const handleSubmit = (event) => {
+  const dispatch = useDispatch();
+  const { error } = useSelector((state) => state.auth);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+  const [customError, setCustomError] = useState({});
+
+  useEffect(() => {
+    if (error === null) {
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+      });
+    }
+  }, [error]);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    const validationError = formValidator(
+      formData,
+      config.validationRules.registration
+    );
+    setCustomError(validationError);
+
+    if (Object.keys(validationError).length === 0) {
+      await dispatch(userRegister(formData));
+    }
+  };
+  const changeHandler = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
   return (
     <Container
@@ -51,6 +85,10 @@ const Register = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete='given-name'
+                value={formData.firstName}
+                onChange={changeHandler}
+                helperText={customError.firstName}
+                error={!!customError.firstName}
                 name='firstName'
                 required
                 fullWidth
@@ -63,6 +101,10 @@ const Register = () => {
               <TextField
                 required
                 fullWidth
+                value={formData.lastName}
+                onChange={changeHandler}
+                helperText={customError.lastName}
+                error={!!customError.lastName}
                 id='lastName'
                 label='Last Name'
                 name='lastName'
@@ -73,6 +115,10 @@ const Register = () => {
               <TextField
                 required
                 fullWidth
+                value={formData.email}
+                onChange={changeHandler}
+                helperText={customError.email || (error && error.email)}
+                error={!!customError.email || !!(error && error.email)}
                 id='email'
                 label='Email Address'
                 name='email'
@@ -83,6 +129,10 @@ const Register = () => {
               <TextField
                 required
                 fullWidth
+                value={formData.password}
+                onChange={changeHandler}
+                helperText={customError.password}
+                error={!!customError.password}
                 name='password'
                 label='Password'
                 type='password'

@@ -4,35 +4,38 @@ import axios from "axios";
 
 const initialState = {
   isLoading: false,
-  token: null,
+  isAutherized: false,
   error: null,
 };
 
-export const userRegister = createAsyncThunk("register", async (data) => {
-  try {
-    const response = await axios
-      .post(config.API_URL.register, data)
-      .then((res) => {
-        return res.data;
-      });
-    return response.data.token;
-  } catch (error) {
-    console.error(error);
-    throw error;
+export const userRegister = createAsyncThunk(
+  "register",
+  async (data, thunkApi) => {
+    try {
+      const response = await axios
+        .post(config.API_URL.register, data)
+        .then((res) => {
+          return res.data;
+        });
+      return response.data;
+    } catch (error) {
+      // Pass the error response to be handled in the rejected case
+      return thunkApi.rejectWithValue(error.response.data);
+    }
   }
-});
+);
 
-export const userLogin = createAsyncThunk("login", async (data) => {
+export const userLogin = createAsyncThunk("login", async (data, thunkApi) => {
   try {
     const response = await axios
       .post(`${config.API_URL.login}`, data)
       .then((res) => {
         return res.data;
       });
-    return response.data.token;
+    return response;
   } catch (error) {
-    console.error(error);
-    throw error;
+    // Pass the error response to be handled in the rejected case
+    return thunkApi.rejectWithValue(error.response.data);
   }
 });
 
@@ -46,25 +49,29 @@ export const AuthSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(userRegister.fulfilled, (state, action) => {
+      .addCase(userRegister.fulfilled, (state) => {
         state.isLoading = false;
-        state.token = action.payload;
+        state.isAutherized = true;
+        state.error = null;
       })
       .addCase(userRegister.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.isAutherized = false;
+        state.error = action.payload;
       })
       .addCase(userLogin.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(userLogin.fulfilled, (state, action) => {
+      .addCase(userLogin.fulfilled, (state) => {
         state.isLoading = false;
-        state.token = action.payload;
+        state.isAutherized = true;
+        state.error = null;
       })
       .addCase(userLogin.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.isAutherized = false;
+        state.error = action.payload;
       });
   },
 });

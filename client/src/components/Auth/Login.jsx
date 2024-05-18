@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -14,26 +14,48 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Copyright from "@components/Copyright";
 import { userLogin } from "@store/features/AuthSlice";
+import { formValidator } from "@utils/common";
+import config from "@utils/config";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const { error } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    rememberMe: false,
   });
+  const [customError, setCustomError] = useState({});
 
-  const handleSubmit = (event) => {
+  useEffect(() => {
+    if (error === null) {
+      setFormData({
+        email: "",
+        password: "",
+        rememberMe: false,
+      });
+    }
+  }, [error]);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch(userLogin(formData));
-    setFormData({
-      email: "",
-      password: "",
-    });
+    const validationError = formValidator(
+      formData,
+      config.validationRules.login
+    );
+    setCustomError(validationError);
+
+    if (Object.keys(validationError).length === 0) {
+      await dispatch(userLogin(formData));
+    }
   };
 
   const changeHandler = (event) => {
     const { name, value } = event.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: name === "rememberMe" ? event.target.checked : value,
+    }));
   };
 
   return (
@@ -75,6 +97,8 @@ const Login = () => {
             autoComplete='email'
             autoFocus
             onChange={changeHandler}
+            helperText={customError.email || (error && error.email)}
+            error={!!customError.email || !!(error && error.email)}
           />
           <TextField
             margin='normal'
@@ -87,9 +111,19 @@ const Login = () => {
             id='password'
             autoComplete='current-password'
             onChange={changeHandler}
+            helperText={customError.password || (error && error.password)}
+            error={!!customError.password || !!(error && error.password)}
           />
           <FormControlLabel
-            control={<Checkbox value='remember' color='primary' />}
+            control={
+              <Checkbox
+                value='remember'
+                checked={formData.rememberMe}
+                color='primary'
+                name='rememberMe'
+                onChange={changeHandler}
+              />
+            }
             label='Remember me'
           />
           <Button
@@ -117,4 +151,5 @@ const Login = () => {
     </Container>
   );
 };
+
 export default Login;

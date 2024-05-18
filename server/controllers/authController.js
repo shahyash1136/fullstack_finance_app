@@ -1,9 +1,8 @@
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { db } from "../utils/db.js";
 import dotevn from "dotenv";
-import { generateToken } from "../utils/common.js";
 dotevn.config({ path: "../config.env" });
+import { generateToken } from "../utils/common.js";
 
 const register = async (req, res) => {
   try {
@@ -17,7 +16,7 @@ const register = async (req, res) => {
     );
 
     if (existingUser.rows.length > 0) {
-      return res.status(409).json({ message: "Email Id already exists" });
+      return res.status(409).json({ email: "Email Id already exists" });
     }
 
     const newUser = await db.query(
@@ -46,7 +45,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
 
     //get the user from the DB
     const user = await db.query("SELECT * FROM users WHERE email_id = $1", [
@@ -55,7 +54,7 @@ const login = async (req, res) => {
 
     //check if user exist
     if (user.rows.length === 0) {
-      return res.status(401).json({ message: "Invalid email" });
+      return res.status(401).json({ email: "Invalid email" });
     }
 
     const validPassword = await bcrypt.compare(
@@ -65,11 +64,11 @@ const login = async (req, res) => {
 
     //check if password is valid or not
     if (!validPassword) {
-      return res.status(401).json({ message: "Invalid password" });
+      return res.status(401).json({ password: "Invalid password" });
     }
 
     //generate token
-    const token = generateToken(newUser.rows[0].id);
+    const token = generateToken(user.rows[0].id, rememberMe);
 
     // Set the token in an HTTP-only cookie
     res.cookie("jwt", token, {
