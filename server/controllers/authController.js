@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { db } from "../utils/db.js";
 import dotevn from "dotenv";
+import { generateToken } from "../utils/common.js";
 dotevn.config({ path: "../config.env" });
 
 const register = async (req, res) => {
@@ -25,15 +26,16 @@ const register = async (req, res) => {
     );
 
     //generate token
-    const token = await jwt.sign(
-      { userId: newUser.rows[0].id },
-      process.env.JWT_SECRET_KEY
-    );
-    const data = {
-      token: token,
-    };
+    const token = generateToken(newUser.rows[0].id);
 
-    res.status(201).json({ data, message: "Successful" });
+    // Set the token in an HTTP-only cookie
+    res.cookie("jwt", token, {
+      httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+      secure: process.env.NODE_ENV === "production", // Ensures the cookie is sent over HTTPS in production
+      maxAge: 3600000, // 1 hour in milliseconds
+    });
+
+    res.status(201).json({ message: "Registration successful" });
   } catch (error) {
     console.log("Error during signup", error);
     res.status(500).json({
@@ -66,15 +68,17 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
 
-    const token = await jwt.sign(
-      { userId: user.rows[0].id },
-      process.env.JWT_SECRET_KEY
-    );
+    //generate token
+    const token = generateToken(newUser.rows[0].id);
 
-    const data = {
-      token: token,
-    };
-    res.status(200).json({ data, message: "Successful" });
+    // Set the token in an HTTP-only cookie
+    res.cookie("jwt", token, {
+      httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+      secure: process.env.NODE_ENV === "production", // Ensures the cookie is sent over HTTPS in production
+      maxAge: 3600000, // 1 hour in milliseconds
+    });
+
+    res.status(200).json({ message: "Login successful" });
   } catch (error) {
     console.error("Error during login", error);
     res.status(500).json({ message: "Error during login" });

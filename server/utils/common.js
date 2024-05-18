@@ -12,4 +12,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-export { upload };
+//function for genrating JWT token
+const generateToken = (userId) => {
+  return jwt.sign({ userId }, process.env.JWT_SECRET_KEY, {
+    expiresIn: "1h", // Token expiration time
+  });
+};
+
+export { upload, generateToken };
