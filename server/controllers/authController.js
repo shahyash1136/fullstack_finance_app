@@ -25,10 +25,10 @@ const register = async (req, res) => {
     );
 
     //generate token
-    const token = generateToken(newUser.rows[0].id);
+    const token = generateToken(newUser.rows[0].user_id);
 
     // Set the token in an HTTP-only cookie
-    res.cookie("jwt", token, {
+    res.cookie("token", token, {
       httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
       secure: process.env.NODE_ENV === "production", // Ensures the cookie is sent over HTTPS in production
       maxAge: 3600000, // 1 hour in milliseconds
@@ -67,11 +67,13 @@ const login = async (req, res) => {
       return res.status(401).json({ password: "Invalid password" });
     }
 
+    console.log(user.rows);
+
     //generate token
-    const token = generateToken(user.rows[0].id, rememberMe);
+    const token = generateToken(user.rows[0].user_id, rememberMe);
 
     // Set the token in an HTTP-only cookie
-    res.cookie("jwt", token, {
+    res.cookie("token", token, {
       httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
       secure: process.env.NODE_ENV === "production", // Ensures the cookie is sent over HTTPS in production
       maxAge: 3600000, // 1 hour in milliseconds

@@ -6,12 +6,15 @@ config.API_BASE_URL = "/api/v1/";
 
 config.API_NAME = {
   auth: "auth",
+  user: "user",
 };
 
 config.API_URL = {
   //Auth apis
   register: `${config.BASE_URL}${config.API_BASE_URL}${config.API_NAME.auth}/register`,
   login: `${config.BASE_URL}${config.API_BASE_URL}${config.API_NAME.auth}/login`,
+  //user api
+  user: `${config.BASE_URL}${config.API_BASE_URL}${config.API_NAME.user}`,
 };
 
 config.validationRules = {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,6 +16,7 @@ import Copyright from "@components/Copyright";
 import { userLogin } from "@store/features/AuthSlice";
 import { formValidator } from "@utils/common";
 import config from "@utils/config";
+import { getUser } from "@store/features/UserSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const Login = () => {
     rememberMe: false,
   });
   const [customError, setCustomError] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (error === null) {
@@ -46,7 +48,12 @@ const Login = () => {
     setCustomError(validationError);
 
     if (Object.keys(validationError).length === 0) {
-      await dispatch(userLogin(formData));
+      const loginResult = await dispatch(userLogin(formData));
+
+      if (userLogin.fulfilled.match(loginResult)) {
+        await dispatch(getUser());
+        navigate("/");
+      }
     }
   };
 

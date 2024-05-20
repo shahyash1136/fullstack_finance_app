@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import dotevn from "dotenv";
-dotevn.config({ path: "../config.env" });
+import dotenv from "dotenv";
+dotenv.config({ path: "../config.env" });
 
 const authMiddleware = (req, res, next) => {
   const token = req.cookies.token;
@@ -12,14 +12,19 @@ const authMiddleware = (req, res, next) => {
     });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+  jwt.verify(
+    token,
+    process.env.JWT_SECRET_KEY,
+    { algorithms: ["HS256"] },
+    (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
 
-    req.user = decoded;
-    next();
-  });
+      req.user = decoded;
+      next();
+    }
+  );
 };
 
 export { authMiddleware };

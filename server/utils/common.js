@@ -17,7 +17,8 @@ const upload = multer({ storage });
 
 //function for genrating JWT token
 const generateToken = (userId, rememberMe = false) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET_KEY, {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET_KEY, {
+    algorithm: "HS256",
     expiresIn: rememberMe ? "30d" : "1h", // Token expiration time
   });
 };

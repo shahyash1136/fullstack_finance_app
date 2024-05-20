@@ -12,7 +12,13 @@ dotenv.config({ path: "./config.env" });
 const app = express();
 
 //enable the cors
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Frontend URL
+    credentials: true, // Enable credentials (cookies, authorization headers, etc.)
+    optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+  })
+);
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
