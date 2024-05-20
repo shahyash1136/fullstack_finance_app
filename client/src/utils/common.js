@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
+import config from "./config";
 
 function capitalizeWords(str) {
   return str.replace(/\b\w/g, (char) => char.toUpperCase());
@@ -39,15 +39,23 @@ export const removeCookies = (name) => {
   return Cookies.remove(name);
 };
 
-// Function to check if token is expired
-export const isTokenExpired = (token) => {
-  try {
-    const decoded = jwtDecode(token);
-    if (decoded.exp < Date.now() / 1000) {
-      return true; // Token is expired
-    }
-    return false; // Token is not expired
-  } catch (error) {
-    return true; // Error decoding token
+//local storage
+export function getLocalStorage(key) {
+  const localData = localStorage.getItem(`${config.nameSpaceKey}-${key}`);
+  if (localData === null) {
+    return false;
   }
-};
+  try {
+    return JSON.parse(localData);
+  } catch (error) {
+    return false;
+  }
+}
+
+export function setLocalStorage(key, value) {
+  localStorage.setItem(`${config.nameSpaceKey}-${key}`, JSON.stringify(value));
+}
+
+export function removeLoaclStorage(key) {
+  localStorage.removeItem(key);
+}

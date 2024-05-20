@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import config from "@utils/config";
 import axios from "axios";
-import { removeCookies } from "@utils/common";
+import { setLocalStorage, getLocalStorage } from "@utils/common";
 
 const initialState = {
   isLoading: false,
-  isAuthorized: false,
+  isAuthorized: getLocalStorage("isAuthorized") || false,
   error: null,
 };
 
@@ -43,10 +43,12 @@ export const AuthSlice = createSlice({
   reducers: {
     logout(state) {
       state.isAuthorized = false;
+      setLocalStorage("isAuthorized", false);
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
     },
     setAuthorized(state, action) {
       state.isAuthorized = action.payload;
+      setLocalStorage("isAuthorized", action.payload);
     },
   },
   extraReducers: (builders) => {
@@ -56,28 +58,46 @@ export const AuthSlice = createSlice({
         state.error = null;
       })
       .addCase(userRegister.fulfilled, (state) => {
+        setLocalStorage("isAuthorized", true);
         state.isLoading = false;
         state.isAuthorized = true;
         state.error = null;
       })
       .addCase(userRegister.rejected, (state, action) => {
+        setLocalStorage("isAuthorized", false);
         state.isLoading = false;
         state.isAuthorized = false;
         state.error = action.payload;
+        // Check if error response contains a 401 status code
+        if (action.error?.code === 401) {
+          // If 401, dispatch the logout action
+          setLocalStorage("isAuthorized", false);
+          state.isAuthorized = false;
+          document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+        }
       })
       .addCase(userLogin.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(userLogin.fulfilled, (state) => {
+        setLocalStorage("isAuthorized", true);
         state.isLoading = false;
         state.isAuthorized = true;
         state.error = null;
       })
       .addCase(userLogin.rejected, (state, action) => {
+        setLocalStorage("isAuthorized", false);
         state.isLoading = false;
         state.isAuthorized = false;
         state.error = action.payload;
+        // Check if error response contains a 401 status code
+        if (action.error?.code === 401) {
+          // If 401, dispatch the logout action
+          setLocalStorage("isAuthorized", false);
+          state.isAuthorized = false;
+          document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+        }
       });
   },
 });

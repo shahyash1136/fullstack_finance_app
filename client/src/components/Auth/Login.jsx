@@ -20,7 +20,7 @@ import { getUser } from "@store/features/UserSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const { error } = useSelector((state) => state.auth);
+  const { error, isAuthorized } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -28,6 +28,12 @@ const Login = () => {
   });
   const [customError, setCustomError] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthorized) {
+      navigate("/");
+    }
+  }, [isAuthorized, navigate]);
 
   useEffect(() => {
     if (error === null) {

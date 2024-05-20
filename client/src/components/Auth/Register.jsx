@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,10 +14,11 @@ import Copyright from "@components/Copyright";
 import { formValidator } from "@utils/common";
 import config from "@utils/config";
 import { userRegister } from "@store/features/AuthSlice";
+import { getUser } from "@store/features/UserSlice";
 
 const Register = () => {
   const dispatch = useDispatch();
-  const { error } = useSelector((state) => state.auth);
+  const { error, isAuthorized } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -25,6 +26,13 @@ const Register = () => {
     password: "",
   });
   const [customError, setCustomError] = useState({});
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthorized) {
+      navigate("/");
+    }
+  }, [isAuthorized, navigate]);
 
   useEffect(() => {
     if (error === null) {
@@ -46,7 +54,11 @@ const Register = () => {
     setCustomError(validationError);
 
     if (Object.keys(validationError).length === 0) {
-      await dispatch(userRegister(formData));
+      const registerResult = await dispatch(userRegister(formData));
+      if (userRegister.fulfilled.match(registerResult)) {
+        await dispatch(getUser());
+        navigate("/");
+      }
     }
   };
   const changeHandler = (event) => {

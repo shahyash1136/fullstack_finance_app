@@ -2,6 +2,8 @@ const config = {};
 
 config.BASE_URL = import.meta.env.VITE_BASE_URL;
 
+config.nameSpaceKey = "FT";
+
 config.API_BASE_URL = "/api/v1/";
 
 config.API_NAME = {
