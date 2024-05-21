@@ -1,5 +1,7 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "@store/store";
 import "./App.scss";
 import Login from "@components/Auth/Login";
 import Register from "@components/Auth/Register";
@@ -10,7 +12,7 @@ const defaultTheme = createTheme();
 
 function App() {
   return (
-    <>
+    <Provider store={store}>
       <ThemeProvider theme={defaultTheme}>
         <BrowserRouter>
           <Routes>
@@ -22,7 +24,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
-    </>
+    </Provider>
   );
 }
 
