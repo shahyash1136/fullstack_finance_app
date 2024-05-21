@@ -14,7 +14,6 @@ import Copyright from "@components/Copyright";
 import { formValidator } from "@utils/common";
 import config from "@utils/config";
 import { userRegister } from "@store/features/AuthSlice";
-import { getUser } from "@store/features/UserSlice";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -56,7 +55,6 @@ const Register = () => {
     if (Object.keys(validationError).length === 0) {
       const registerResult = await dispatch(userRegister(formData));
       if (userRegister.fulfilled.match(registerResult)) {
-        await dispatch(getUser());
         navigate("/");
       }
     }

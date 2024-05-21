@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import config from "@utils/config";
-import axios from "axios";
+import axiosInstance from "@utils/axiosConfig";
 import { setLocalStorage, getLocalStorage } from "@utils/common";
 
 const initialState = {
@@ -13,7 +13,7 @@ export const userRegister = createAsyncThunk(
   "register",
   async (data, thunkApi) => {
     try {
-      await axios
+      await axiosInstance
         .post(config.API_URL.register, data, { withCredentials: true })
         .then((res) => {
           return res.data;
@@ -28,7 +28,7 @@ export const userRegister = createAsyncThunk(
 
 export const userLogin = createAsyncThunk("login", async (data, thunkApi) => {
   try {
-    await axios.post(`${config.API_URL.login}`, data, {
+    await axiosInstance.post(`${config.API_URL.login}`, data, {
       withCredentials: true,
     });
   } catch (error) {
@@ -68,13 +68,6 @@ export const AuthSlice = createSlice({
         state.isLoading = false;
         state.isAuthorized = false;
         state.error = action.payload;
-        // Check if error response contains a 401 status code
-        if (action.error?.code === 401) {
-          // If 401, dispatch the logout action
-          setLocalStorage("isAuthorized", false);
-          state.isAuthorized = false;
-          document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-        }
       })
       .addCase(userLogin.pending, (state) => {
         state.isLoading = true;
@@ -91,13 +84,6 @@ export const AuthSlice = createSlice({
         state.isLoading = false;
         state.isAuthorized = false;
         state.error = action.payload;
-        // Check if error response contains a 401 status code
-        if (action.error?.code === 401) {
-          // If 401, dispatch the logout action
-          setLocalStorage("isAuthorized", false);
-          state.isAuthorized = false;
-          document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-        }
       });
   },
 });

@@ -16,7 +16,6 @@ import Copyright from "@components/Copyright";
 import { userLogin } from "@store/features/AuthSlice";
 import { formValidator } from "@utils/common";
 import config from "@utils/config";
-import { getUser } from "@store/features/UserSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -57,7 +56,6 @@ const Login = () => {
       const loginResult = await dispatch(userLogin(formData));
 
       if (userLogin.fulfilled.match(loginResult)) {
-        await dispatch(getUser());
         navigate("/");
       }
     }

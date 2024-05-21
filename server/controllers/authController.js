@@ -31,7 +31,7 @@ const register = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
       secure: process.env.NODE_ENV === "production", // Ensures the cookie is sent over HTTPS in production
-      maxAge: 3600000, // 1 hour in milliseconds
+      maxAge: rememberMe ? 60 * 60 * 24 * 30 * 1000 : 3600000, // 1 hour or 30 days in milliseconds
     });
 
     res.status(201).json({ message: "Registration successful" });
@@ -76,7 +76,7 @@ const login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
       secure: process.env.NODE_ENV === "production", // Ensures the cookie is sent over HTTPS in production
-      maxAge: 3600000, // 1 hour in milliseconds
+      maxAge: rememberMe ? 60 * 60 * 24 * 30 * 1000 : 120000, // 1 hour or 30 days in milliseconds
     });
 
     res.status(200).json({ message: "Login successful" });
