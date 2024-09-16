@@ -8,12 +8,12 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Copyright from "@components/Copyright";
 import { formValidator } from "@utils/common";
 import config from "@utils/config";
 import { userRegister } from "@store/features/AuthSlice";
+import Heading from "../Text/Heading";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -86,15 +86,14 @@ const Register = () => {
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component='h1' variant='h5'>
-            Sign up
-          </Typography>
+          <Heading title={"Sign up"} />
         </Box>
         <Box component='form' noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete='given-name'
+                variant='filled'
                 value={formData.firstName}
                 onChange={changeHandler}
                 helperText={customError.firstName}
@@ -111,6 +110,7 @@ const Register = () => {
               <TextField
                 required
                 fullWidth
+                variant='filled'
                 value={formData.lastName}
                 onChange={changeHandler}
                 helperText={customError.lastName}
@@ -125,6 +125,7 @@ const Register = () => {
               <TextField
                 required
                 fullWidth
+                variant='filled'
                 value={formData.email}
                 onChange={changeHandler}
                 helperText={customError.email || (error && error.email)}
@@ -139,6 +140,7 @@ const Register = () => {
               <TextField
                 required
                 fullWidth
+                variant='filled'
                 value={formData.password}
                 onChange={changeHandler}
                 helperText={customError.password}
@@ -154,6 +156,7 @@ const Register = () => {
           <Button
             type='submit'
             fullWidth
+            color='secondary'
             variant='contained'
             sx={{ mt: 3, mb: 2 }}>
             Sign Up

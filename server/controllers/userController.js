@@ -6,7 +6,7 @@ const getUser = async (req, res) => {
   try {
     const { id } = req.user;
 
-    const user = await db.query("SELECT * FROM users WHERE user_id = $1", [id]);
+    const user = await db.query("SELECT user_id,email_id,first_name,last_name,profile_picture FROM users WHERE user_id = $1", [id]);
 
     if (user.rows.length === 0) {
       return res.status(404).json({ message: "User not found" });

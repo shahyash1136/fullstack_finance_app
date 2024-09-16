@@ -59,3 +59,19 @@ export function setLocalStorage(key, value) {
 export function removeLoaclStorage(key) {
   localStorage.removeItem(key);
 }
+
+
+export const getInitials = (name) => {
+  const names = name.split(' ');
+  const initials = names.map((n) => n[0].toUpperCase()).join('');
+  return initials;
+}
+
+export const getRandomColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
