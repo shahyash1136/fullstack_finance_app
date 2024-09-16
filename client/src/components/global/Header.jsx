@@ -14,8 +14,10 @@ const Header = () => {
       {/* SEARCH BAR */}
 
       {/* ICONS */}
-      <Box display='flex'>
-        <IconButton onClick={colorMode.toggleColorMode}>
+      <Box display='flex' alignItems='center'>
+        <IconButton
+          sx={{ width: 42, height: 42 }}
+          onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
             <DarkModeOutlinedIcon />
           ) : (

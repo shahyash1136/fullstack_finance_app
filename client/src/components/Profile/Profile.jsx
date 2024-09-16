@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Avatar,
   Box,
@@ -28,6 +28,12 @@ const Profile = () => {
   const { data } = useSelector((state) => state.user);
 
   const open = Boolean(anchorEl);
+  const [bgColor, setBgColor] = useState(""); // State to store the background color
+
+  useEffect(() => {
+    // Set random color only once when the component mounts
+    setBgColor(getRandomColor());
+  }, []); // Empty dependency array to ensure it runs only on mount
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -35,8 +41,9 @@ const Profile = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const initials = getInitials(`${data?.first_name} ${data?.last_name}`);
-  const bgColor = getRandomColor();
+
   return (
     <>
       <IconButton
@@ -49,11 +56,20 @@ const Profile = () => {
         {data?.profile_picture !== null ? (
           <Avatar
             alt={`${data?.first_name} ${data?.last_name}`}
-            sx={{ width: 32, height: 32 }}
+            sx={{ width: 42, height: 42 }}
             src={data?.profile_picture}
           />
         ) : (
-          <Avatar sx={{ bgcolor: bgColor, color: "white" }}>{initials}</Avatar>
+          <Avatar
+            sx={{
+              width: 42,
+              height: 42,
+              bgcolor: bgColor,
+              color: "white",
+              fontSize: 14,
+            }}>
+            {initials}
+          </Avatar>
         )}
       </IconButton>
       <Menu
